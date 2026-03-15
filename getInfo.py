@@ -1,4 +1,4 @@
-import platform, psutil, shutil, time, cpuinfo, os
+import platform, psutil, shutil, time, cpuinfo, os, datetime
 
 
 
@@ -14,11 +14,12 @@ def systemInfo():
             ";memCap:" + str(round(psutil.virtual_memory().total / (1024.0 ** 3))) +
             ";diskSize" + str(total // (2 ** 30)))
 def updateInfo():
-    # values reprezent in order: memory%, cpu%, cpu frequency, active users
+    # values reprezent in order: memory%, cpu%, cpu frequency, last reboot time
     return (
             '[' +
             str(psutil.virtual_memory().percent) + ',' +
-            str(psutil.cpu_percent()) + ']'
-            # ";cpuFreq:" + "{:.2f}".format(psutil.cpu_freq().current) +
-            # ";users:" + str(psutil.users())
+            str(psutil.cpu_percent()) + "," +
+            "{:.2f}".format(psutil.cpu_freq().current) + ',' +
+            str(datetime.datetime.fromtimestamp(psutil.boot_time()))
+            + ']'
             )
