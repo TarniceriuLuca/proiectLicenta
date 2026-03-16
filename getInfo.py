@@ -19,7 +19,7 @@ def updateInfo():
             '[' +
             str(psutil.virtual_memory().percent) + ',' +
             str(psutil.cpu_percent()) + "," +
-            "{:.2f}".format(psutil.cpu_freq().current) + ',' +
+            "{:.2f}".format(psutil.cpu_freq().current) + ',"' +
             str(datetime.datetime.fromtimestamp(psutil.boot_time()))
-            + ']'
+            + '"]'
             )
