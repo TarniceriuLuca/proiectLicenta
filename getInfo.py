@@ -16,6 +16,7 @@ def updateInfo():
             str(platform.system()) + '","' +
             str(cpuinfo.get_cpu_info()['brand_raw']) + '","' +
             str(round(psutil.virtual_memory().total / (1024.0 ** 3))) + '","' +
-            str(total // (2 ** 30)) +
+            str(total // (2 ** 30)) + '","' +
+            str(used // (2**30)) +
             '"]'
             )
