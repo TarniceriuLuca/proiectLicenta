@@ -1,5 +1,5 @@
 import socketserver
-from getInfo import updateInfo, systemInfo
+from getInfo import updateInfo
 
 
 # ip = "192.168.0.124"
