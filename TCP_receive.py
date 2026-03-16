@@ -1,5 +1,5 @@
 import socketserver
-from getInfo import updateInfo
+from getInfo import updateInfo, systemInfo
 
 
 # ip = "192.168.0.124"
@@ -19,6 +19,8 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         response = "bad_request"
         if self.data.decode("utf-8") == "request_status":
             response = updateInfo()
+        elif self.data.decode("utf-8") == "system_info":
+            response = systemInfo()
 
         # Likewise, self.wfile is a file-like object used to write back
         # to the client
