@@ -1,5 +1,5 @@
 import socketserver
-import threading
+import thread
 from getInfo import updateInfo
 
 
@@ -8,6 +8,9 @@ ip = "0.0.0.0"
 port = 65432
 
 class MyTCPHandler(socketserver.StreamRequestHandler):
+
+    def stop_server(server):
+        server.shutdown()
 
     def handle(self):
         # self.rfile is a file-like object created by the handler.
@@ -20,18 +23,13 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         response = "bad_request"
         if self.data.decode("utf-8") == "request_status":
             response = updateInfo()
+        if self.data.decode("utf-8") == "shutdown":
+            thread.start_new_thread(stop_server, (server,))
 
 
-        # Likewise, self.wfile is a file-like object used to write back
-        # to the client
-        # self.wfile.write(self.data.upper())
         self.wfile.write(bytes(response, "utf-8"))
 
 
-# with socketserver.TCPServer((ip, port), MyTCPHandler) as server:
-#     # Activate the server; this will keep running until you
-#     # interrupt the program with Ctrl-C
-#     server.serve_forever()
 
 class Server(socketserver.TCPServer):
     def run(self):
@@ -43,5 +41,5 @@ class Server(socketserver.TCPServer):
             self.server_close()
 
 server = Server((ip, port), MyTCPHandler)
-thread = threading.Thread(None, server.run)
-thread.start()
+server.run()
+
