@@ -20,13 +20,27 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         if self.data.decode("utf-8") == "request_status":
             response = updateInfo()
 
+
         # Likewise, self.wfile is a file-like object used to write back
         # to the client
         # self.wfile.write(self.data.upper())
         self.wfile.write(bytes(response, "utf-8"))
 
 
-with socketserver.TCPServer((ip, port), MyTCPHandler) as server:
-    # Activate the server; this will keep running until you
-    # interrupt the program with Ctrl-C
-    server.serve_forever()
+# with socketserver.TCPServer((ip, port), MyTCPHandler) as server:
+#     # Activate the server; this will keep running until you
+#     # interrupt the program with Ctrl-C
+#     server.serve_forever()
+
+class Server(socketserver.TCPServer):
+    def run(self):
+        try:
+            self.serve_forever()
+        except KeyboardInterrupt:
+            pass
+        finally:
+            self.server_close()
+
+server = Server((ip, port), MyTCPHandler)
+thread = threading.Thread(None, server.run)
+thread.start()
