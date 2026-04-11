@@ -1,5 +1,5 @@
 import socketserver
-import thread
+import threading
 from getInfo import updateInfo
 
 
@@ -24,7 +24,8 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         if self.data.decode("utf-8") == "request_status":
             response = updateInfo()
         if self.data.decode("utf-8") == "shutdown":
-            thread.start_new_thread(stop_server, (server,))
+            threading.Thread(target=server.shutdown).start()
+            response = "shutting down server"
 
 
         self.wfile.write(bytes(response, "utf-8"))
