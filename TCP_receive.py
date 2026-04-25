@@ -26,9 +26,8 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         if self.data.decode("utf-8") == "shutdown":
             t1 = threading.Thread(target=server.shutdown)
             t1.start()
-            response = "shutting down server"
             t1.join()
-
+            response = "shutdown complete"
 
         self.wfile.write(bytes(response, "utf-8"))
 
