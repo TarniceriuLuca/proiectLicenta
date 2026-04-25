@@ -24,8 +24,10 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         if self.data.decode("utf-8") == "request_status":
             response = updateInfo()
         if self.data.decode("utf-8") == "shutdown":
-            threading.Thread(target=server.shutdown).start()
+            t1 = threading.Thread(target=server.shutdown)
+            t1.start()
             response = "shutting down server"
+            t1.join()
 
 
         self.wfile.write(bytes(response, "utf-8"))
