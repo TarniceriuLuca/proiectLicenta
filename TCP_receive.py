@@ -1,50 +1,33 @@
 import socketserver, socket
 import threading
+import sys
 from getInfo import updateInfo
 
 
-# ip = "192.168.0.124"
 ip = "0.0.0.0"
 port = 65432
 
-class MyTCPHandler(socketserver.StreamRequestHandler):
 
-    def stop_server(server):
-        server.shutdown()
-
-    def handle(self):
-        # self.rfile is a file-like object created by the handler.
-        # We can now use e.g. readline() instead of raw recv() calls.
-        # We limit ourselves to 10000 bytes to avoid abuse by the sender.
-        self.data = self.rfile.readline(10000).rstrip()
-        print(f"{self.client_address[0]} wrote:")
-        print(self.data.decode("utf-8"))
-
-        response = "bad_request"
-        if self.data.decode("utf-8") == "request_status":
-            response = updateInfo()
-        if self.data.decode("utf-8") == "shutdown":
-            t1 = threading.Thread(target=server.shutdown)
-            t1.start()
-            t1.join()
-            response = "shutdown complete"
-
-        self.wfile.write(bytes(response, "utf-8"))
-
-
-
-class Server(socketserver.TCPServer):
-    def server_bind(self):
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(self.server_address)
-    def run(self):
-        try:
-            self.serve_forever()
-        except KeyboardInterrupt:
-            pass
-        finally:
-            self.server_close()
-
-server = Server((ip, port), MyTCPHandler)
-server.run()
-
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind((ip, port))
+    while(True):
+        sock.listen()
+        conn, addr = sock.accept()
+        print(addr)
+        with conn:
+            while(True):
+                data = conn.recv(1024)
+                print(data)
+                if not data:
+                    break
+                response = "bad_request"
+                if data.decode("utf-8") == "request_status":
+                    response = updateInfo()
+                if data.decode("utf-8") == "shutdown":
+                    conn.sendall(bytes("shutdonwOK", "utf-8"))
+                    sock.shutdown(socket.SHUT_RDWR)
+                    sock.close()
+                    sys.exit()
+                print(response)
+                conn.sendall(bytes(response, "utf-8"))
