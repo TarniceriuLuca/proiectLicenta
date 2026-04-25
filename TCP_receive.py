@@ -35,6 +35,9 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
 
 
 class Server(socketserver.TCPServer):
+    def server_bind(self):
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.bind(self.server_address)
     def run(self):
         try:
             self.serve_forever()
