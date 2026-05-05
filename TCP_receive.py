@@ -25,7 +25,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 if data.decode("utf-8") == "request_status":
                     response = updateInfo()
                 if data.decode("utf-8") == "shutdown":
-                    conn.sendall(bytes("shutdonwOK", "utf-8"))
+                    conn.sendall(bytes("shutdown_success", "utf-8"))
                     sock.shutdown(socket.SHUT_RDWR)
                     sock.close()
                     sys.exit()
