@@ -14,11 +14,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     while(True):
         sock.listen()
         conn, addr = sock.accept()
-        print(addr)
+        #print(addr)
         with conn:
             while(True):
                 data = conn.recv(1024)
-                print(data)
+                #print(data)
                 if not data:
                     break
                 response = "bad_request"
@@ -29,5 +29,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                     sock.shutdown(socket.SHUT_RDWR)
                     sock.close()
                     sys.exit()
-                print(response)
+                #print(response)
                 conn.sendall(bytes(response, "utf-8"))
